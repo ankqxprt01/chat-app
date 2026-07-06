@@ -11,7 +11,11 @@ import { Button } from "./ui/button";
 
 import { SendHorizontal } from "lucide-react";
 
+import { useRef } from "react";
+
 function MessageInput({ chatId }) {
+
+const typingTimeout = useRef(null);
 
 const [sendMessage] = useMutation(SEND_MESSAGE, {
   refetchQueries: [{ query: GET_CHATS }],
@@ -46,25 +50,21 @@ const [sendMessage] = useMutation(SEND_MESSAGE, {
       }
     };
 
-  const handleChange = (
-    e
-  ) => {
-    setContent(
-      e.target.value
-    );
+  const handleChange = (e) => {
+  setContent(e.target.value);
 
-    socket.emit(
-      "typing",
-      chatId
-    );
+  socket.emit("typing", chatId);
 
-    setTimeout(() => {
-      socket.emit(
-        "stop-typing",
-        chatId
-      );
-    }, 1000);
-  };
+  // clear previous timeout
+  if (typingTimeout.current) {
+    clearTimeout(typingTimeout.current);
+  }
+
+  // set new timeout
+  typingTimeout.current = setTimeout(() => {
+    socket.emit("stop-typing", chatId);
+  }, 800);
+};
 
   const handleKeyDown = (
     e
@@ -79,7 +79,7 @@ const [sendMessage] = useMutation(SEND_MESSAGE, {
 
   return (
     <div className="flex items-center gap-2 mt-4 text-white">
-      <Input 
+      <Input style={{ fontSize: "16px" }}
         type="text"
         value={content}
         onChange={
