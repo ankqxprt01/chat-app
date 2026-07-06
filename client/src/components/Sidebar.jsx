@@ -236,7 +236,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
                   <div className="relative">
                     <Avatar>
                       <AvatarFallback>
-                        {user.username?.charAt(0)?.toUpperCase()}
+                        {otherUser?.username?.charAt(0)?.toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
 
