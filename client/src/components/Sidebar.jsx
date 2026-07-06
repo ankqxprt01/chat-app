@@ -29,7 +29,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
     usersData?.users?.filter(
       (user) =>
         user.id !== currentUser?.id &&
-        user.username?.toLowerCase().includes(search.toLowerCase())
+        user.username?.toLowerCase().includes(search.toLowerCase()),
     ) || [];
 
   // ---------------- BACK NAVIGATION ----------------
@@ -48,9 +48,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
   const handleUserClick = async (receiverId) => {
     try {
       const existingChat = data?.chats?.find((chat) =>
-        chat.participants?.some(
-          (p) => String(p.id) === String(receiverId)
-        )
+        chat.participants?.some((p) => String(p.id) === String(receiverId)),
       );
 
       if (existingChat) {
@@ -98,8 +96,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
 
     return [...chats].sort(
       (a, b) =>
-        getTime(b.lastMessage?.createdAt) -
-        getTime(a.lastMessage?.createdAt)
+        getTime(b.lastMessage?.createdAt) - getTime(a.lastMessage?.createdAt),
     );
   }, [chats]);
 
@@ -128,11 +125,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
       <div className="p-4 border-b flex justify-between items-center">
         <div>
           <h2 className="text-xl font-bold">
-            {selectedChat
-              ? "Chat"
-              : showUsers
-              ? "Users"
-              : "Chats"}
+            {selectedChat ? "Chat" : showUsers ? "Users" : "Chats"}
           </h2>
 
           <p className="text-xs text-muted-foreground">
@@ -181,8 +174,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
 
           {/* USERS LIST */}
           {filteredUsers.map((user) => {
-            // const isOnline = onlineUsers?.includes(user.id);
-            const isOnline = otherUser?.id && onlineUsers?.includes(otherUser.id);
+            const isOnline = onlineUsers?.includes(user.id);
 
             return (
               <div
@@ -190,11 +182,11 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
                 onClick={() => handleUserClick(user.id)}
                 className="p-4 border-b flex items-center gap-3 hover:bg-muted cursor-pointer"
               >
-              <Avatar>
-                <AvatarFallback>
-                  {otherUser?.username?.charAt(0)?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+                <Avatar>
+                  <AvatarFallback>
+                    {user.username?.charAt(0)?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
                 <div>
                   <p className="font-medium">{user.username}</p>
@@ -218,7 +210,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
           {sortedChats.length > 0 ? (
             sortedChats.map((chat) => {
               const otherUser = chat.participants?.find(
-                (p) => p.id !== currentUser?.id
+                (p) => p.id !== currentUser?.id,
               );
 
               const isOnline = onlineUsers?.includes(otherUser?.id);
@@ -233,7 +225,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
                       : ""
                   }`}
                 >
-                 <div className="relative">
+                  <div className="relative">
                     <Avatar>
                       <AvatarFallback>
                         {otherUser?.username?.charAt(0)?.toUpperCase()}
@@ -243,7 +235,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
                     {isOnline && (
                       <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-white" />
                     )}
-                </div>
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between">
                       <p className="font-semibold truncate">
@@ -263,9 +255,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
             })
           ) : (
             <div className="p-6 text-center">
-              <h3 className="font-semibold mb-2">
-                No Conversations Yet
-              </h3>
+              <h3 className="font-semibold mb-2">No Conversations Yet</h3>
               <p className="text-muted-foreground">
                 Click "New Chat" to start chatting
               </p>
