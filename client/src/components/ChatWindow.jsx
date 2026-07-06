@@ -326,4 +326,4 @@ function ChatWindow({ chatId, selectedChat, onlineUsers }) {
   );
 }
 
-export default ChatWindow;
+export default React.memo(ChatWindow);

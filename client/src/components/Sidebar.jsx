@@ -267,4 +267,4 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
   );
 }
 
-export default Sidebar;
+export default React.memo(Sidebar);

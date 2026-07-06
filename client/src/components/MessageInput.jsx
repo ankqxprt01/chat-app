@@ -17,10 +17,12 @@ function MessageInput({ chatId }) {
 
 const typingTimeout = useRef(null);
 
-const [sendMessage] = useMutation(SEND_MESSAGE, {
-  refetchQueries: [{ query: GET_CHATS }],
-  awaitRefetchQueries: true,
-});
+// const [sendMessage] = useMutation(SEND_MESSAGE, {
+//   refetchQueries: [{ query: GET_CHATS }],
+//   awaitRefetchQueries: true,
+// });
+
+const [sendMessage] = useMutation(SEND_MESSAGE);
   const [content, setContent] =
     useState("");
 
@@ -50,20 +52,23 @@ const [sendMessage] = useMutation(SEND_MESSAGE, {
       }
     };
 
-  const handleChange = (e) => {
+ const typingRef = useRef(false);
+const timeoutRef = useRef(null);
+
+const handleChange = (e) => {
   setContent(e.target.value);
 
-  socket.emit("typing", chatId);
-
-  // clear previous timeout
-  if (typingTimeout.current) {
-    clearTimeout(typingTimeout.current);
+  if (!typingRef.current) {
+    socket.emit("typing", chatId);
+    typingRef.current = true;
   }
 
-  // set new timeout
-  typingTimeout.current = setTimeout(() => {
+  clearTimeout(timeoutRef.current);
+
+  timeoutRef.current = setTimeout(() => {
     socket.emit("stop-typing", chatId);
-  }, 800);
+    typingRef.current = false;
+  }, 600);
 };
 
   const handleKeyDown = (
