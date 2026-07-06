@@ -106,7 +106,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
   // ---------------- LOADING ----------------
   if (loading) {
     return (
-      <div className="w-full sm:w-80 h-[100dvh] flex items-center justify-center border-r">
+      <div className="w-full sm:w-80 h-100dvh flex items-center justify-center border-r">
         Loading...
       </div>
     );
