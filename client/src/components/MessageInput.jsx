@@ -15,7 +15,7 @@ import { useRef } from "react";
 
 function MessageInput({ chatId }) {
 
-const typingTimeout = useRef(null);
+const typingTimeoutRef = useRef(null);
 
 // const [sendMessage] = useMutation(SEND_MESSAGE, {
 //   refetchQueries: [{ query: GET_CHATS }],
@@ -52,23 +52,22 @@ const [sendMessage] = useMutation(SEND_MESSAGE);
       }
     };
 
- const typingRef = useRef(false);
-const timeoutRef = useRef(null);
 
+
+const typingTimeoutRef = useRef(null);
 const handleChange = (e) => {
-  setContent(e.target.value);
+  const value = e.target.value;
+  setContent(value);
 
-  if (!typingRef.current) {
-    socket.emit("typing", chatId);
-    typingRef.current = true;
+  socket.emit("typing", chatId);
+
+  if (typingTimeoutRef.current) {
+    clearTimeout(typingTimeoutRef.current);
   }
 
-  clearTimeout(timeoutRef.current);
-
-  timeoutRef.current = setTimeout(() => {
+  typingTimeoutRef.current = setTimeout(() => {
     socket.emit("stop-typing", chatId);
-    typingRef.current = false;
-  }, 600);
+  }, 800);
 };
 
   const handleKeyDown = (
