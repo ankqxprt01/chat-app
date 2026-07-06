@@ -11,9 +11,7 @@ function ChatPage() {
 
   const currentUser = useSelector((state) => state.auth.user);
 
-  // -----------------------------
-  // NEW MESSAGE LISTENER
-  // -----------------------------
+  // ---------------- NEW MESSAGE ----------------
   useEffect(() => {
     const handler = (msg) => {
       console.log("NEW MESSAGE:", msg);
@@ -21,14 +19,10 @@ function ChatPage() {
 
     socket.on("new-message", handler);
 
-    return () => {
-      socket.off("new-message", handler);
-    };
+    return () => socket.off("new-message", handler);
   }, []);
 
-  // -----------------------------
-  // ONLINE USERS LISTENER
-  // -----------------------------
+  // ---------------- ONLINE USERS ----------------
   useEffect(() => {
     const handleOnlineUsers = (users) => {
       setOnlineUsers((users || []).map(String));
@@ -36,19 +30,15 @@ function ChatPage() {
 
     socket.on("online-users", handleOnlineUsers);
 
-    return () => {
-      socket.off("online-users", handleOnlineUsers);
-    };
+    return () => socket.off("online-users", handleOnlineUsers);
   }, []);
 
-  // -----------------------------
-  // JOIN + SYNC (FIXED CORE LOGIC)
-  // -----------------------------
+  // ---------------- SOCKET JOIN ----------------
   useEffect(() => {
     if (!currentUser?.id) return;
 
     if (!socket.connected) {
-      socket.connect(); // 🔥 CRITICAL FIX
+      socket.connect();
     }
 
     const join = () => {
@@ -57,16 +47,12 @@ function ChatPage() {
     };
 
     socket.on("connect", join);
-
-    // if already connected
     join();
 
     return () => socket.off("connect", join);
   }, [currentUser?.id]);
 
-  // -----------------------------
-  // JOIN CHAT ROOM
-  // -----------------------------
+  // ---------------- CHAT ROOM JOIN ----------------
   useEffect(() => {
     const chatId = selectedChat?.id;
     if (!chatId) return;
@@ -78,22 +64,57 @@ function ChatPage() {
     };
   }, [selectedChat?.id]);
 
-  console.log("SOCKET ID:", socket.id);
-  console.log("CONNECTED:", socket.connected);
-
   return (
-    <div className="flex h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-800">
-      <Sidebar
-        selectedChat={selectedChat}
-        setSelectedChat={setSelectedChat}
-        onlineUsers={onlineUsers}
-      />
+    <div
+      className="
+        h-[100dvh]
+        flex
+        flex-col
+        md:flex-row
+        bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800
+      "
+    >
+      {/* LEFT SIDE (SIDEBAR) */}
+      <div
+        className={`
+          h-full
+          md:w-80
+          w-full
+          border-r
+          ${selectedChat ? "hidden md:block" : "block"}
+        `}
+      >
+        <Sidebar
+          selectedChat={selectedChat}
+          setSelectedChat={setSelectedChat}
+          onlineUsers={onlineUsers}
+        />
+      </div>
 
-      <div className="flex-1 flex flex-col">
-        <div className="flex justify-end p-4 border-b">
+      {/* RIGHT SIDE (CHAT WINDOW) */}
+      <div
+        className={`
+          flex-1
+          flex
+          flex-col
+          h-full
+          ${!selectedChat ? "hidden md:flex" : "flex"}
+        `}
+      >
+        {/* TOP BAR */}
+        <div className="flex justify-between items-center p-3 border-b bg-black/20 backdrop-blur">
+          {/* BACK BUTTON (mobile only) */}
+          <button
+            onClick={() => setSelectedChat(null)}
+            className="md:hidden px-3 py-1 bg-muted rounded text-sm"
+          >
+            Back
+          </button>
+
           <LogoutButton />
         </div>
 
+        {/* CHAT WINDOW */}
         <ChatWindow
           chatId={selectedChat?.id}
           selectedChat={selectedChat}
