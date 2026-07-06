@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 
 import { SEND_MESSAGE } from "../../graphql/mutations/messageMutations";
@@ -8,75 +8,99 @@ import socket from "../socket/socket";
 
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+
 import { SendHorizontal } from "lucide-react";
 
+import { useRef } from "react";
+
 function MessageInput({ chatId }) {
-  const [sendMessage] = useMutation(SEND_MESSAGE, {
-    refetchQueries: [{ query: GET_CHATS }],
-    awaitRefetchQueries: true,
-  });
 
-  const [content, setContent] = useState("");
+const typingTimeoutRef = useRef(null);
 
-  // ✅ FIX: prevents multiple timers (IMPORTANT FOR MOBILE SMOOTHNESS)
-  const typingTimeoutRef = useRef(null);
+// const [sendMessage] = useMutation(SEND_MESSAGE, {
+//   refetchQueries: [{ query: GET_CHATS }],
+//   awaitRefetchQueries: true,
+// });
 
-  const handleSend = async () => {
-    if (!content.trim()) return;
+const [sendMessage] = useMutation(SEND_MESSAGE);
+  const [content, setContent] =
+    useState("");
 
-    try {
-      await sendMessage({
-        variables: {
-          chatId,
-          content,
-        },
-      });
+  const handleSend =
+    async () => {
+      if (
+        !content.trim()
+      )
+        return;
 
-      setContent("");
+      try {
+        await sendMessage({
+          variables: {
+            chatId,
+            content,
+          },
+        });
 
-      socket.emit("stop-typing", chatId);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        setContent("");
 
-  const handleChange = (e) => {
-    const value = e.target.value;
+        socket.emit(
+          "stop-typing",
+          chatId
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    setContent(value);
 
-    // typing event (same as yours)
-    socket.emit("typing", chatId);
 
-    // ✅ FIX: clear previous timeout before creating new one
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
+const typingTimeoutRef = useRef(null);
+const handleChange = (e) => {
+  const value = e.target.value;
+  setContent(value);
 
-    typingTimeoutRef.current = setTimeout(() => {
-      socket.emit("stop-typing", chatId);
-    }, 800);
-  };
+  socket.emit("typing", chatId);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // ✅ important for mobile keyboard stability
+  if (typingTimeoutRef.current) {
+    clearTimeout(typingTimeoutRef.current);
+  }
+
+  typingTimeoutRef.current = setTimeout(() => {
+    socket.emit("stop-typing", chatId);
+  }, 800);
+};
+
+  const handleKeyDown = (
+    e
+  ) => {
+    if (
+      e.key ===
+      "Enter"
+    ) {
       handleSend();
     }
   };
 
   return (
     <div className="flex items-center gap-2 mt-4 text-white">
-      <Input
+      <Input style={{ fontSize: "16px" }}
         type="text"
         value={content}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
+        onChange={
+          handleChange
+        }
+        onKeyDown={
+          handleKeyDown
+        }
         placeholder="Type a message..."
         className="flex-1"
       />
 
-      <Button onClick={handleSend}>
+      <Button
+        onClick={
+          handleSend
+        }
+      >
         <SendHorizontal />
       </Button>
     </div>
