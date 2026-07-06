@@ -181,7 +181,8 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
 
           {/* USERS LIST */}
           {filteredUsers.map((user) => {
-            const isOnline = onlineUsers?.includes(user.id);
+            // const isOnline = onlineUsers?.includes(user.id);
+            const isOnline = otherUser?.id && onlineUsers?.includes(otherUser.id);
 
             return (
               <div
@@ -189,11 +190,11 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
                 onClick={() => handleUserClick(user.id)}
                 className="p-4 border-b flex items-center gap-3 hover:bg-muted cursor-pointer"
               >
-                <Avatar>
-                  <AvatarFallback>
-                    {user.username?.charAt(0)?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+              <Avatar>
+                <AvatarFallback>
+                  {otherUser?.username?.charAt(0)?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
 
                 <div>
                   <p className="font-medium">{user.username}</p>
