@@ -24,6 +24,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
 
   const currentUser = useSelector((state) => state.auth.user);
 
+  // ---------------- USERS FILTER ----------------
   const filteredUsers =
     usersData?.users?.filter(
       (user) =>
@@ -31,19 +32,19 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
         user.username?.toLowerCase().includes(search.toLowerCase())
     ) || [];
 
-  // 🔙 GLOBAL BACK HANDLER
+  // ---------------- BACK NAVIGATION ----------------
   const handleBack = () => {
     if (selectedChat) {
-      setSelectedChat(null); // back from chat screen
+      setSelectedChat(null);
       return;
     }
-
     if (showUsers) {
-      setShowUsers(false); // back from users → chats
+      setShowUsers(false);
       return;
     }
   };
 
+  // ---------------- CREATE / OPEN CHAT ----------------
   const handleUserClick = async (receiverId) => {
     try {
       const existingChat = data?.chats?.find((chat) =>
@@ -67,25 +68,31 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
         setShowUsers(false);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Chat creation error:", err);
     }
   };
 
+  // ---------------- TIME FORMAT ----------------
   const formatTime = (createdAt) => {
     if (!createdAt) return "";
+
     const date = new Date(Number(createdAt) || createdAt);
-    if (isNaN(date)) return "";
+    if (isNaN(date.getTime())) return "";
+
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
+  // ---------------- SORT CHATS ----------------
   const sortedChats = useMemo(() => {
     const getTime = (value) => {
       if (!value) return 0;
+
       const num = Number(value);
       if (!isNaN(num)) return num;
+
       return Date.parse(value) || 0;
     };
 
@@ -96,6 +103,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
     );
   }, [chats]);
 
+  // ---------------- LOADING ----------------
   if (loading) {
     return (
       <div className="w-full sm:w-80 h-[100dvh] flex items-center justify-center border-r">
@@ -104,14 +112,15 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
     );
   }
 
+  // ---------------- UI ----------------
   return (
     <div
       className={`
-        w-full sm:w-80 
-        h-[100dvh] 
-        border-r 
-        flex flex-col 
+        w-full sm:w-80
+        h-[100dvh]
+        border-r
         bg-background
+        flex flex-col
         ${selectedChat ? "hidden sm:flex" : "flex"}
       `}
     >
@@ -125,6 +134,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
               ? "Users"
               : "Chats"}
           </h2>
+
           <p className="text-xs text-muted-foreground">
             {showUsers
               ? `${filteredUsers.length} users`
@@ -155,18 +165,21 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
         </div>
       </div>
 
-      {/* USERS */}
+      {/* USERS SECTION */}
       {showUsers && !selectedChat ? (
         <div className="flex-1 overflow-y-auto min-h-0">
+          {/* SEARCH */}
           <div className="p-3 border-b">
             <input
-              className="w-full border px-3 py-2 text-sm rounded"
+              type="text"
               placeholder="Search users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              className="w-full border px-3 py-2 rounded text-sm"
             />
           </div>
 
+          {/* USERS LIST */}
           {filteredUsers.map((user) => {
             const isOnline = onlineUsers?.includes(user.id);
 
@@ -174,11 +187,11 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
               <div
                 key={user.id}
                 onClick={() => handleUserClick(user.id)}
-                className="p-4 border-b flex gap-3 items-center hover:bg-muted cursor-pointer"
+                className="p-4 border-b flex items-center gap-3 hover:bg-muted cursor-pointer"
               >
                 <Avatar>
                   <AvatarFallback>
-                    {user.username?.[0]?.toUpperCase()}
+                    {user.username?.charAt(0)?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
 
@@ -191,54 +204,71 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
               </div>
             );
           })}
+
+          {filteredUsers.length === 0 && (
+            <div className="p-6 text-center text-muted-foreground">
+              No users found
+            </div>
+          )}
         </div>
       ) : (
-        /* CHATS */
+        /* CHATS SECTION */
         <div className="flex-1 overflow-y-auto min-h-0">
-          {sortedChats.map((chat) => {
-            const otherUser = chat.participants?.find(
-              (p) => p.id !== currentUser?.id
-            );
+          {sortedChats.length > 0 ? (
+            sortedChats.map((chat) => {
+              const otherUser = chat.participants?.find(
+                (p) => p.id !== currentUser?.id
+              );
 
-            const isOnline = onlineUsers?.includes(otherUser?.id);
+              const isOnline = onlineUsers?.includes(otherUser?.id);
 
-            return (
-              <div
-                key={chat.id}
-                onClick={() => setSelectedChat(chat)}
-                className={`p-4 border-b flex items-center gap-3 cursor-pointer hover:bg-muted ${
-                  selectedChat?.id === chat.id
-                    ? "bg-muted border-l-4 border-primary"
-                    : ""
-                }`}
-              >
-                <Avatar>
-                  <AvatarFallback>
-                    {otherUser?.username?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+              return (
+                <div
+                  key={chat.id}
+                  onClick={() => setSelectedChat(chat)}
+                  className={`p-4 border-b flex items-center gap-3 cursor-pointer hover:bg-muted ${
+                    selectedChat?.id === chat.id
+                      ? "bg-muted border-l-4 border-primary"
+                      : ""
+                  }`}
+                >
+                  <Avatar>
+                    <AvatarFallback>
+                      {otherUser?.username?.charAt(0)?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between">
-                    <p className="font-semibold truncate">
-                      {otherUser?.username}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between">
+                      <p className="font-semibold truncate">
+                        {otherUser?.username}
+                      </p>
+                      <span className="text-xs text-muted-foreground">
+                        {formatTime(chat.lastMessage?.createdAt)}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground truncate">
+                      {chat.lastMessage?.content || "No messages yet"}
                     </p>
-                    <span className="text-xs text-muted-foreground">
-                      {formatTime(chat.lastMessage?.createdAt)}
-                    </span>
                   </div>
 
-                  <p className="text-sm text-muted-foreground truncate">
-                    {chat.lastMessage?.content || "No messages yet"}
-                  </p>
+                  {isOnline && (
+                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                  )}
                 </div>
-
-                {isOnline && (
-                  <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <div className="p-6 text-center">
+              <h3 className="font-semibold mb-2">
+                No Conversations Yet
+              </h3>
+              <p className="text-muted-foreground">
+                Click "New Chat" to start chatting
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
