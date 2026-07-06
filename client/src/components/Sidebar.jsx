@@ -258,10 +258,6 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
                       {chat.lastMessage?.content || "No messages yet"}
                     </p>
                   </div>
-
-                  {isOnline && (
-                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                  )}
                 </div>
               );
             })
