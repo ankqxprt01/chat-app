@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery, useApolloClient } from "@apollo/client/react";
 import { GET_MESSAGES } from "../../graphql/queries/messageQueries";
 import MessageInput from "./MessageInput";
