@@ -117,7 +117,7 @@ function Sidebar({ selectedChat, setSelectedChat, onlineUsers }) {
     <div
       className={`
         w-full sm:w-80
-        h-[100dvh]
+        h-dvh
         border-r
         bg-background
         flex flex-col

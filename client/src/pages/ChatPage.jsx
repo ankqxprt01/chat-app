@@ -67,11 +67,11 @@ function ChatPage() {
   return (
     <div
       className="
-        h-[100dvh]
+        h-dvh
         flex
         flex-col
         md:flex-row
-        bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800
+        bg-linear-to-br from-slate-950 via-slate-900 to-slate-800
       "
     >
       {/* LEFT SIDE (SIDEBAR) */}
