@@ -67,7 +67,7 @@ function ChatPage() {
   return (
     <div
       className="
-        h-dvh
+        h-svh
         flex
         flex-col
         md:flex-row
