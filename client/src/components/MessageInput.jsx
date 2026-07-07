@@ -52,9 +52,6 @@ const [sendMessage] = useMutation(SEND_MESSAGE);
       }
     };
 
-
-
-const typingTimeoutRef = useRef(null);
 const handleChange = (e) => {
   const value = e.target.value;
   setContent(value);
