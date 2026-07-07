@@ -39,12 +39,19 @@ type Mutation {
     username: String!
     email: String!
     password: String!
+    fav_food: String!
   ): AuthResponse
 
   login(
     email: String!
     password: String!
   ): AuthResponse
+
+  forgotPassword(
+    email: String!
+    fav_food: String!
+    newPassword: String!
+  ): String!
 
   createChat(
     receiverId: ID!
@@ -55,6 +62,7 @@ type Mutation {
     content: String!
   ): Message
 }
+
 `;
 
 module.exports = typeDefs;

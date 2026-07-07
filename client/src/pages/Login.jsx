@@ -49,7 +49,7 @@ function Login() {
         setCredentials({
           user: data.login.user,
           token: data.login.token,
-        })
+        }),
       );
 
       localStorage.setItem("user", JSON.stringify(data.login.user));
@@ -61,87 +61,94 @@ function Login() {
     }
   };
 
- return (
-  <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 px-4">
-    <Card className="w-full max-w-md border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-2xl">
-      
-      <CardHeader className="space-y-2 text-center">
-        <CardTitle className="text-2xl font-semibold text-white">
-          Welcome Back
-        </CardTitle>
-        <p className="text-sm text-gray-400">
-          Login to continue to your dashboard
-        </p>
-      </CardHeader>
-
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
-
-          {/* Email */}
-          <div className="space-y-1">
-            <Label htmlFor="email" className="text-gray-300 py-2 px-1">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="bg-white/10 border-white/10 text-white placeholder:text-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
-              placeholder="you@example.com"
-            />
-          </div>
-
-          {/* Password */}
-          <div className="space-y-1">
-            <Label htmlFor="password" className="text-gray-300 py-2 px-1">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="bg-white/10 border-white/10 text-white placeholder:text-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
-              placeholder="••••••••"
-            />
-          </div>
-
-          {/* Error */}
-          {error && (
-            <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {/* Button */}
-          <Button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-500 transition-all duration-200 shadow-lg shadow-indigo-500/20"
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </Button>
-
-          {/* Footer */}
-          <p className="text-sm text-center text-gray-400">
-            Don’t have an account?{" "}
-            <Link
-              to="/register"
-              className="text-indigo-400 hover:text-indigo-300 font-medium transition"
-            >
-              Create one
-            </Link>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 px-4">
+      <Card className="w-full max-w-md border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-2xl">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-2xl font-semibold text-white">
+            Welcome Back
+          </CardTitle>
+          <p className="text-sm text-gray-400">
+            Login to continue to your dashboard
           </p>
-        </form>
-      </CardContent>
-    </Card>
-  </div>
-);
+        </CardHeader>
+
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-gray-300 py-2 px-1">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="bg-white/10 border-white/10 text-white placeholder:text-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1">
+              <Label htmlFor="password" className="text-gray-300 py-2 px-1">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="bg-white/10 border-white/10 text-white placeholder:text-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div className="text-right">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-indigo-400 hover:text-indigo-300"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg">
+                {error}
+              </div>
+            )}
+
+            {/* Button */}
+            <Button
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 transition-all duration-200 shadow-lg shadow-indigo-500/20"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+
+            {/* Footer */}
+            <p className="text-sm text-center text-gray-400">
+              Don’t have an account?{" "}
+              <Link
+                to="/register"
+                className="text-indigo-400 hover:text-indigo-300 font-medium transition"
+              >
+                Create one
+              </Link>
+            </p>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
 
 export default Login;

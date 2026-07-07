@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ChatPage from "./pages/ChatPage";
-
+import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Layout from "./components/Layout";
@@ -30,7 +30,16 @@ function App() {
           }
         />
 
- <Route element={<Layout />}></Route>
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicRoute>
+              <ForgotPassword />
+            </PublicRoute>
+          }
+        />
+
+        <Route element={<Layout />}></Route>
 
         <Route
           path="/chat"

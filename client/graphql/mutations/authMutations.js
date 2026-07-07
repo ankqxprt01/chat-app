@@ -24,11 +24,13 @@ export const REGISTER = gql`
     $username: String!
     $email: String!
     $password: String!
+    $fav_food: String!
   ) {
     register(
       username: $username
       email: $email
       password: $password
+      fav_food: $fav_food
     ) {
       token
       user {
@@ -37,5 +39,19 @@ export const REGISTER = gql`
         email
       }
     }
+  }
+`;
+
+export const FORGOT_PASSWORD = gql`
+  mutation ForgotPassword(
+    $email: String!
+    $fav_food: String!
+    $newPassword: String!
+  ) {
+    forgotPassword(
+      email: $email
+      fav_food: $fav_food
+      newPassword: $newPassword
+    )
   }
 `;

@@ -20,10 +20,17 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    fav_food: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+
     currentSocketId: {
-    type: String,
-    default: null,
-  }
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

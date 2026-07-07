@@ -75,7 +75,7 @@ const resolvers = {
   },
 
   Mutation: {
-    register: async (_, { username, email, password }) => {
+    register: async (_, { username, email, password, fav_food }) => {
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
@@ -88,6 +88,7 @@ const resolvers = {
         username,
         email,
         password: hashedPassword,
+        fav_food,
       });
 
       const token = generateToken(user._id);
@@ -124,6 +125,26 @@ const resolvers = {
         user,
       };
     },
+
+    forgotPassword: async (_, { email, fav_food, newPassword }) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.fav_food.toLowerCase() !== fav_food.toLowerCase()) {
+    throw new Error("Favorite food does not match");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
+
+  await user.save();
+
+  return "Password reset successfully";
+},
 
     createChat: async (_, { receiverId }, { user }) => {
       if (!user) throw new Error("Not Authorized");
